@@ -1,0 +1,28 @@
+@startuml
+skinparam monochrome true
+
+actor User
+
+
+User -> Cover : get index.html
+Cover -> User : send index.html
+
+User -> Cover : login
+Cover -> Babel : login(rest)
+
+database BabelDB
+Babel -> BabelDB : SQL login
+
+
+alt login correct
+
+BabelDB -> Babel : SQL Result
+Babel -> Cover : login result(rest)
+Cover -> User : login result(rest)
+
+else erreur de connexion
+BabelDB -> Babel : SQL Result empty
+Babel -> Cover : login error(rest)
+Cover -> User : login error(rest)
+end
+@enduml
