@@ -1,0 +1,66 @@
+@startuml
+skinparam monochrome true
+actor User
+
+== Open Page ==
+
+User -> Cover : get library.html
+activate User
+    
+    activate Cover
+    Cover -> User : send library.html
+    deactivate Cover
+
+deactivate User
+
+
+User -> Cover : get library (rest)
+activate User
+    activate Cover
+    Cover -> Babel : get library (rest)
+        activate Babel
+    
+        database BabelDB
+
+alt user token login valid
+    
+        Babel -> BabelDB : "select * from \nlibrary where user = ..."
+
+            activate BabelDB
+            BabelDB -> Babel : SQL Result
+            deactivate BabelDB
+
+        Babel -> Cover : library result(rest)
+
+
+    Cover -> User : library result(rest)
+
+else user token invalid
+    
+
+    Babel -> Cover : token expired error(rest)
+deactivate Babel
+Cover -> User : token expired(rest)
+deactivate Cover
+deactivate User
+end
+
+== Add book ==
+
+User -> Cover : add book record (rest)
+activate User
+activate Cover
+Cover -> Babel : add book record (rest)
+activate Babel
+alt user token login valid
+Babel -> BabelDB : insert into ...
+Babel -> Cover : add succesfull
+Cover -> User : add succesfull
+else user token invalid
+Babel -> Cover : token expired
+deactivate Babel
+Cover -> User : token expired
+deactivate Cover
+    deactivate User
+end
+@enduml

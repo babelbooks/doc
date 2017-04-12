@@ -1,0 +1,44 @@
+@startuml
+skinparam monochrome true
+
+actor User
+participant Cover
+participant Babel
+database BabelDB
+participant Search
+
+== Got to Search results ==
+
+User -> Cover : get search.html
+activate User
+    activate Cover
+    Cover -> User : send search.html
+    deactivate Cover
+deactivate User
+== Typing in the search bar ==
+User -> Cover : search_quick(rest)
+activate User
+    activate Cover
+    Cover -> Search : search_quick(rest)
+
+        activate Search
+        Search -> Cover : search_results(json)
+        deactivate Search
+    Cover -> User : search_results(json)
+    deactivate Cover
+deactivate User
+
+== Validate search (enter) ==
+
+User -> Cover : search (rest)
+activate User
+    activate Cover
+    Cover -> Search : search (rest)
+        activate Search
+        Search -> Cover: results (rest)
+        deactivate Search
+    Cover -> User : results (rest)
+    deactivate Cover
+deactivate User
+
+@enduml

@@ -2,10 +2,6 @@
 plantumlpath := "D:\Apps\plantuml.jar"
 ###
 
-plants := $(wildcard uml/process/*.plantuml)
-images := $(subst plantuml,png, $(plants))
-
-
 ifeq ($(OS),Windows_NT)
 #os is windows
 dir := $(shell cd)
@@ -17,10 +13,18 @@ dir := $(shell pwd)
 RM_COMMAND := rm -rf
 endif
 
+output_dir = $(dir)/bin/
+
+plants := $(wildcard uml/process/*.plantuml)
+images := $(subst plantuml,png, $(plants))
+images := $(foreach images_tmp,$(images),$(output_dir)$(images_tmp))
+
+
+
 foo : $(images)
 
-%.png : %.plantuml
-	java -jar $(plantumlpath) -o $(dir)/bin/$(dir $@) $<
+$(output_dir)%.png : %.plantuml
+	java -jar $(plantumlpath) -o $(dir $@) $<
 
 PHONY: mrproper
 mrproper :
