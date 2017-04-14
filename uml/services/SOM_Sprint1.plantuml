@@ -1,0 +1,43 @@
+@startuml
+skinparam monochrome true
+actor Client
+participant IHM as ihm
+participant SM as sm
+participant USER as user
+participant BOOK as book
+
+
+== Simple book search ==
+Client -> ihm : SimpleBookSearch
+ihm -> sm : SimpleBookSearch
+sm -> book : SearchBookByTitle(title)
+book -> sm : list<Book>
+sm -> user : SearchBorrowedBookByTitle(title)
+user -> sm : list<bookId>
+sm -> book : getLivreById(list<bookId>)
+book -> sm : list<Book>
+
+== Authentification ==
+Client -> ihm : Authentificate
+ihm -> sm : Authentificate
+sm -> user : Authentificate(username, password)
+user -> sm : return_code
+
+== Consult Library ==
+Client -> ihm : ConsultLibrary
+ihm -> sm : ConsultLibrary
+sm -> book : GetBookByOrigin(userId)
+book -> sm : list<Book>
+sm -> user : SearchBorrowedBook(userId)
+user -> sm : list<bookId>
+sm -> book : getLivreById(list<bookId>)
+book -> sm : list<Book>
+
+== Borrow book ==
+Client -> ihm : BorrowBook
+ihm -> sm : BorrowBook
+sm -> user : BorrowBook(userId, bookId)
+
+
+@enduml
+
